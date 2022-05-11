@@ -1,0 +1,79 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Spliiter de Resumen de cuentas
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Architectures:
+            - x86_64
+    Environment:
+        Variables:
+          REGION : us-east-1
+
+    Handler: app.lambda_handler
+    Runtime: python3.9
+    Timeout: 180
+    Tags: 
+      - Key: "project"
+        Value: "Resumen de Cuenta"
+
+Resources:
+  splitter_lambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./lambdas/python/splitter
+      Description: Obtiene y parsea la data del CSV e invoca a la lambda "core".
+      Environment:
+        Variables:
+          CORE_LAMBDA : !GetAtt core_lambda.Arn
+      Events:
+        S3Event:
+          Type: S3
+          Properties:
+              Bucket:
+                Ref: S3Bucket
+              Events:
+                - 's3:ObjectCreated:*'
+              Filter:
+                S3Key:
+                  Rules:
+                    - Name: prefix
+                      Value: input/
+                    - Name: suffix
+                      Value: .csv
+      FunctionName: splitter
+
+  core_lambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./lambdas/python/core
+      Description: Recibe DNI, fecha_desde, fecha_hasta. Realiza las consultas necesarias a la DB y genera un json para invocar a "PDFCreator".
+      Environment:
+        Variables:
+          LAMBDA_PDF_CREATE : !GetAtt PDFCreator.Arn
+          DB_NAME : XXXXX
+          DB_HOST : XXXXX
+          DB_USER : XXXXX
+          DB_PASSWORD : XXXXX
+      FunctionName: core
+
+  PDFCreator_lambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./lambdas/nodeJs/PDFCreator
+      Description: Recibe un JSON y genera un PDF
+      Environment:
+        Variables:
+          LAMBDA_PDF_CREATE : !GetAtt splitter_lambda.Arn
+          DB_NAME : XXXXX
+          DB_HOST : XXXXX
+          DB_USER : XXXXX
+          DB_PASSWORD : XXXXX
+      FunctionName: PDFCreator
+      Runtime: nodejs12.x
+
+  S3Bucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: 'recumen-cuenta-s3'

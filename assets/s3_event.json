@@ -1,0 +1,38 @@
+{
+    "Records": [
+        {
+            "eventVersion": "2.1",
+            "eventSource": "aws:s3",
+            "awsRegion": "us-east-1",
+            "eventTime": "2022-02-01T20:08:01.216Z",
+            "eventName": "ObjectCreated:Put",
+            "userIdentity": {
+                "principalId": "AWS:AROASLBG62CD2YNN34UW7:imanol.santiago@uala.local"
+            },
+            "requestParameters": {
+                "sourceIPAddress": "190.195.234.215"
+            },
+            "responseElements": {
+                "x-amz-request-id": "3RMT6EFZ934J6E46",
+                "x-amz-id-2": "+igItqwY+tX9eOVhGzedBpfG3v8dtEzAeDHI+OsY7QDPKOo+RNNzTw0Nqddfwp/lGuMA8ts2/HpAW78DpC3bVEAjRNg3s0/Q"
+            },
+            "s3": {
+                "s3SchemaVersion": "1.0",
+                "configurationId": "7cde3031-d12e-425a-8222-0bdbd7202d0a",
+                "bucket": {
+                    "name": "labs-support-resumen-cuenta",
+                    "ownerIdentity": {
+                        "principalId": "AWPU63RQ7HXQ6"
+                    },
+                    "arn": "arn:aws:s3:::labs-support-resumen-cuenta"
+                },
+                "object": {
+                    "key": "input/test.csv",
+                    "size": 26,
+                    "eTag": "34a80bba6dbf6b49e0e8449a2ef8314d",
+                    "sequencer": "0061F993212E412B72"
+                }
+            }
+        }
+    ]
+}
