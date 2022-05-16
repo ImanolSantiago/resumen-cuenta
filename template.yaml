@@ -19,14 +19,14 @@ Globals:
         Value: "Resumen de Cuenta"
 
 Resources:
-  splitter_lambda:
+  splitterLambda:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./lambdas/python/splitter
       Description: Obtiene y parsea la data del CSV e invoca a la lambda "core".
       Environment:
         Variables:
-          CORE_LAMBDA : !GetAtt core_lambda.Arn
+          CORE_LAMBDA : !GetAtt coreLambda.Arn
       Events:
         S3Event:
           Type: S3
@@ -44,7 +44,7 @@ Resources:
                       Value: .csv
       FunctionName: splitter
 
-  core_lambda:
+  coreLambda:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./lambdas/python/core
@@ -58,14 +58,14 @@ Resources:
           DB_PASSWORD : XXXXX
       FunctionName: core
 
-  PDFCreator_lambda:
+  PDFCreatorLambda:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./lambdas/nodeJs/PDFCreator
       Description: Recibe un JSON y genera un PDF
       Environment:
         Variables:
-          LAMBDA_PDF_CREATE : !GetAtt splitter_lambda.Arn
+          LAMBDA_PDF_CREATE : !GetAtt splitterLambda.Arn
           DB_NAME : XXXXX
           DB_HOST : XXXXX
           DB_USER : XXXXX
