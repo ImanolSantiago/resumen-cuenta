@@ -4,15 +4,13 @@ import io
 import os
 
 CORE_LAMBDA = os.environ.get("CORE_LAMBDA")
-#REGION = os.environ.get("REGION")
-REGION = "us-east-1"
+REGION = os.environ.get("REGION")
 
 lambda_client = boto3.client("lambda", region_name=REGION) 
 s3_client = boto3.client("s3",
                         region_name= REGION,
-aws_access_key_id = "",
-aws_secret_access_key = "")
-
+                        aws_access_key_id = "",
+                        aws_secret_access_key = "")
 
 def lambda_handler(event, context):
     s3_data = event["Records"][0]["s3"]     
@@ -33,9 +31,9 @@ def callLambda(dni, from_date, to_date):
         "to_date":to_date
     }
     response = lambda_client.invoke(FunctionName=CORE_LAMBDA,
-                             InvocationType="RequestResponse",
-                             Payload=payload)
-    
+                                    InvocationType="RequestResponse",
+                                    Payload=payload)
+
     return
 
 def parseCSV(bucket_name, file_name):
