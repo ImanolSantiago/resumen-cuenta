@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: Spliiter de Resumen de cuentas
+Description: Resumen de cuentas
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
@@ -14,15 +14,15 @@ Globals:
     Handler: app.lambda_handler
     Runtime: python3.9
     Timeout: 180
-    Tags: 
-      - Key: "project"
-        Value: "Resumen de Cuenta"
+    #Tags: 
+    #  - Key: "project"
+    #    Value: "Resumen de Cuenta"
 
 Resources:
   splitterLambda:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: ./lambdas/python/splitter
+      CodeUri: ./lambdas/python/splitter/src
       Description: Obtiene y parsea la data del CSV e invoca a la lambda "core".
       Environment:
         Variables:
@@ -58,20 +58,20 @@ Resources:
           DB_PASSWORD : XXXXX
       FunctionName: core
 
-  PDFCreatorLambda:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: ./lambdas/nodeJs/PDFCreator
-      Description: Recibe un JSON y genera un PDF
-      Environment:
-        Variables:
-          LAMBDA_PDF_CREATE : !GetAtt splitterLambda.Arn
-          DB_NAME : XXXXX
-          DB_HOST : XXXXX
-          DB_USER : XXXXX
-          DB_PASSWORD : XXXXX
-      FunctionName: PDFCreator
-      Runtime: nodejs12.x
+  #PDFCreatorLambda:
+  #  Type: AWS::Serverless::Function
+  #  Properties:
+  #    CodeUri: ./lambdas/nodeJs/PDFCreator
+  #    Description: Recibe un JSON y genera un PDF
+  #    Environment:
+  #      Variables:
+  #        LAMBDA_PDF_CREATE : !GetAtt splitterLambda.Arn
+  #        DB_NAME : XXXXX
+  #        DB_HOST : XXXXX
+  #        DB_USER : XXXXX
+  #        DB_PASSWORD : XXXXX
+  #    FunctionName: PDFCreator
+  #    Runtime: nodejs12.x
 
   S3Bucket:
     Type: 'AWS::S3::Bucket'
